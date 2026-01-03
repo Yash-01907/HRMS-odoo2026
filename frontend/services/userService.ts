@@ -109,4 +109,15 @@ export class UserService {
     `);
         return res.rows;
     }
+
+    static async getUserById(userId: number) {
+        const res = await db.query(`
+      SELECT u.id, u.employee_id, u.email, u.role_id, ep.first_name, ep.last_name, ep.designation, ep.phone, ep.address, ep.avatar_url, ep.joining_date, r.name as role_name
+      FROM users u
+      JOIN employee_profiles ep ON u.id = ep.user_id
+      JOIN roles r ON u.role_id = r.id
+      WHERE u.id = $1
+    `, [userId]);
+        return res.rows[0];
+    }
 }
