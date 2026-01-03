@@ -1,37 +1,104 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { NavigationBar } from './components/NavigationBar';
 import { AdminView } from './components/AdminView';
 import { EmployeeView } from './components/EmployeeView';
 import { TimeOffView } from './components/TimeOffView';
 import { redirect } from 'next/navigation';
+import { checkIn as apiCheckIn, checkOut as apiCheckOut } from '@/lib/api/attendance';
 
-type UserRole = 'admin' | 'employee';
+type UserRole = 'ADMIN' | 'HR' | 'EMPLOYEE';
 type ActiveTab = 'employees' | 'attendance' | 'timeoff';
 
+interface UserData {
+  id: number;
+  employeeId: string;
+  email: string;
+  role: UserRole;
+}
+
 export default function DashboardPage() {
-  // TODO: Get role from backend/context/auth
-  const [userRole] = useState<UserRole>('admin');
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState(true);
   const [checkInStatus, setCheckInStatus] = useState<'in' | 'out'>('out');
+  const [checkInLoading, setCheckInLoading] = useState(false);
 
-  const isAdmin = useMemo(() => userRole === 'admin', [userRole]);
+  // Fetch current user on mount
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const response = await fetch('/api/users/me');
+        if (!response.ok) {
+          // Not logged in, redirect to login
+          window.location.href = '/';
+          return;
+        }
+        const data = await response.json();
+        setUserData(data);
 
-  const [activeTab, setActiveTab] = useState<ActiveTab>(() =>
-    userRole === 'admin' ? 'employees' : 'attendance'
+        // Check today's attendance status
+        const attendanceRes = await fetch('/api/attendance?today=true');
+        if (attendanceRes.ok) {
+          const attendance = await attendanceRes.json();
+          if (attendance.length > 0 && attendance[0].checkIn && !attendance[0].checkOut) {
+            setCheckInStatus('in');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch user:', error);
+        window.location.href = '/';
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchUser();
+  }, []);
+
+  const isAdmin = useMemo(() =>
+    userData?.role === 'ADMIN' || userData?.role === 'HR',
+    [userData]
   );
 
-  const handleCheckIn = useCallback(() => {
-    setCheckInStatus('in');
-  }, []);
+  const [activeTab, setActiveTab] = useState<ActiveTab>('employees');
 
-  const handleCheckOut = useCallback(() => {
-    setCheckInStatus('out');
-  }, []);
+  // Update default tab when user data loads
+  useEffect(() => {
+    if (userData) {
+      setActiveTab(isAdmin ? 'employees' : 'attendance');
+    }
+  }, [userData, isAdmin]);
+
+  const handleCheckIn = useCallback(async () => {
+    if (checkInLoading) return;
+    setCheckInLoading(true);
+    try {
+      await apiCheckIn();
+      setCheckInStatus('in');
+    } catch (error: any) {
+      console.error('Check-in failed:', error.message);
+      alert(error.message || 'Check-in failed');
+    } finally {
+      setCheckInLoading(false);
+    }
+  }, [checkInLoading]);
+
+  const handleCheckOut = useCallback(async () => {
+    if (checkInLoading) return;
+    setCheckInLoading(true);
+    try {
+      await apiCheckOut();
+      setCheckInStatus('out');
+    } catch (error: any) {
+      console.error('Check-out failed:', error.message);
+      alert(error.message || 'Check-out failed');
+    } finally {
+      setCheckInLoading(false);
+    }
+  }, [checkInLoading]);
 
   const handleTabChange = useCallback(
     (tab: ActiveTab) => {
-      // Prevent employees from accessing employees tab
       if (!isAdmin && tab === 'employees') {
         return;
       }
@@ -54,6 +121,15 @@ export default function DashboardPage() {
         return <AdminView />;
     }
   };
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className='min-h-screen flex items-center justify-center'>
+        <div className='animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500'></div>
+      </div>
+    );
+  }
 
   return (
     <div className='min-h-screen'>

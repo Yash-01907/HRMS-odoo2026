@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { getLeaves, applyLeave, updateLeaveStatus } from '@/lib/api/leaves';
 import {
   Dialog,
   DialogContent,
@@ -59,8 +60,9 @@ const mockTimeOffRequests: TimeOffRequest[] = [
 export function TimeOffView({ isAdmin = false }: TimeOffViewProps) {
   const [activeSubTab, setActiveSubTab] = useState('time-off');
   const [searchQuery, setSearchQuery] = useState('');
-  const [requests, setRequests] =
-    useState<TimeOffRequest[]>(mockTimeOffRequests);
+  const [requests, setRequests] = useState<TimeOffRequest[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
     employee: '[Employee]',
@@ -70,6 +72,31 @@ export function TimeOffView({ isAdmin = false }: TimeOffViewProps) {
     allocation: '',
     attachment: null as File | null,
   });
+
+  // Fetch leaves from API
+  useEffect(() => {
+    async function fetchLeaves() {
+      try {
+        const data = await getLeaves();
+        // Map API response to component format
+        const mapped: TimeOffRequest[] = data.map((leave: any) => ({
+          id: leave.id.toString(),
+          name: leave.employeeName || 'Unknown',
+          startDate: new Date(leave.startDate).toLocaleDateString('en-GB'),
+          endDate: new Date(leave.endDate).toLocaleDateString('en-GB'),
+          type: (leave.leaveType === 'PAID' ? 'Paid time Off' :
+            leave.leaveType === 'SICK' ? 'Sick time off' : 'Unpaid Leaves') as TimeOffRequest['type'],
+          status: leave.status.toLowerCase() as 'pending' | 'approved' | 'rejected',
+        }));
+        setRequests(mapped);
+      } catch (error) {
+        console.error('Failed to fetch leaves:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchLeaves();
+  }, []);
 
   const timeOffTypes: TimeOffRequest['type'][] = [
     'Paid time Off',
@@ -86,31 +113,49 @@ export function TimeOffView({ isAdmin = false }: TimeOffViewProps) {
     return diffDays.toFixed(2);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!formData.startDate || !formData.endDate) {
       alert('Please select start and end dates');
       return;
     }
 
-    const newRequest: TimeOffRequest = {
-      id: Date.now().toString(),
-      name: formData.employee,
-      startDate: new Date(formData.startDate).toLocaleDateString('en-GB'),
-      endDate: new Date(formData.endDate).toLocaleDateString('en-GB'),
-      type: formData.timeOffType as TimeOffRequest['type'],
-      status: 'pending',
-    };
+    setSubmitting(true);
+    try {
+      const leaveType = formData.timeOffType === 'Paid time Off' ? 'PAID' :
+        formData.timeOffType === 'Sick time off' ? 'SICK' : 'UNPAID';
 
-    setRequests((prev) => [newRequest, ...prev]);
-    setIsDialogOpen(false);
-    setFormData({
-      employee: '[Employee]',
-      timeOffType: 'Paid time Off',
-      startDate: '',
-      endDate: '',
-      allocation: '',
-      attachment: null,
-    });
+      const result = await applyLeave({
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+        type: leaveType,
+        reason: 'Time off request',
+      });
+
+      // Add to local state
+      const newRequest: TimeOffRequest = {
+        id: result.data.id.toString(),
+        name: formData.employee,
+        startDate: new Date(formData.startDate).toLocaleDateString('en-GB'),
+        endDate: new Date(formData.endDate).toLocaleDateString('en-GB'),
+        type: formData.timeOffType as TimeOffRequest['type'],
+        status: 'pending',
+      };
+
+      setRequests((prev) => [newRequest, ...prev]);
+      setIsDialogOpen(false);
+      setFormData({
+        employee: '[Employee]',
+        timeOffType: 'Paid time Off',
+        startDate: '',
+        endDate: '',
+        allocation: '',
+        attachment: null,
+      });
+    } catch (error: any) {
+      alert(error.message || 'Failed to submit leave request');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleDiscard = () => {
@@ -137,20 +182,30 @@ export function TimeOffView({ isAdmin = false }: TimeOffViewProps) {
     });
   };
 
-  const handleApprove = (id: string) => {
-    setRequests((prev) =>
-      prev.map((req) =>
-        req.id === id ? { ...req, status: 'approved' as const } : req
-      )
-    );
+  const handleApprove = async (id: string) => {
+    try {
+      await updateLeaveStatus(Number(id), 'APPROVED');
+      setRequests((prev) =>
+        prev.map((req) =>
+          req.id === id ? { ...req, status: 'approved' as const } : req
+        )
+      );
+    } catch (error: any) {
+      alert(error.message || 'Failed to approve leave');
+    }
   };
 
-  const handleReject = (id: string) => {
-    setRequests((prev) =>
-      prev.map((req) =>
-        req.id === id ? { ...req, status: 'rejected' as const } : req
-      )
-    );
+  const handleReject = async (id: string) => {
+    try {
+      await updateLeaveStatus(Number(id), 'REJECTED');
+      setRequests((prev) =>
+        prev.map((req) =>
+          req.id === id ? { ...req, status: 'rejected' as const } : req
+        )
+      );
+    } catch (error: any) {
+      alert(error.message || 'Failed to reject leave');
+    }
   };
 
   const filteredRequests = requests.filter(

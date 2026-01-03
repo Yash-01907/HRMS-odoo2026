@@ -107,13 +107,44 @@ export function LoginForm() {
     e.preventDefault();
     if (!validateForm()) return;
 
-    setFormState('loading');
-    await new Promise((r) => setTimeout(r, 1500));
-    setFormState('success');
+    if (mode === 'signup') {
+      // Sign up is handled by admin - show info message
+      setErrors({ loginId: 'Sign up is handled by HR/Admin. Please contact your administrator.' });
+      return;
+    }
 
-    setTimeout(() => {
-      window.location.href = '/dashboard';
-    }, 800);
+    setFormState('loading');
+
+    try {
+      // Determine if loginId is an email or employee ID
+      const isEmail = emailRegex.test(formData.loginId);
+
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          employeeId: isEmail ? formData.loginId : formData.loginId,
+          email: formData.loginId,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Login failed');
+      }
+
+      setFormState('success');
+
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 800);
+
+    } catch (error: any) {
+      setFormState('idle');
+      setErrors({ password: error.message || 'Invalid credentials' });
+    }
   };
 
   return (
