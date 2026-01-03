@@ -3,11 +3,14 @@ import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
 
-// Load environment variables from .env.local or .env
-dotenv.config({ path: path.resolve(__dirname, "../frontend/.env") });
-// Fallback to local if not found in root (adjust path as needed)
-if (!process.env.DB_STRING) {
-    dotenv.config({ path: path.resolve(__dirname, "../frontend/.env.local") });
+// Load environment variables
+const envPathLocal = path.resolve(__dirname, "../.env.local");
+const envPath = path.resolve(__dirname, "../.env");
+
+if (fs.existsSync(envPathLocal)) {
+    dotenv.config({ path: envPathLocal });
+} else {
+    dotenv.config({ path: envPath });
 }
 
 async function main() {
@@ -21,13 +24,17 @@ async function main() {
     });
 
     try {
-        const schemaPath = path.resolve(__dirname, "../frontend/app/api/_db/hrms_schema.sql");
+        const schemaPath = path.resolve(__dirname, "../db/schema.sql");
         console.log(`Reading schema from ${schemaPath}...`);
+        if (!fs.existsSync(schemaPath)) {
+            console.error("Schema file not found at:", schemaPath);
+            process.exit(1);
+        }
         const schemaSql = fs.readFileSync(schemaPath, "utf-8");
 
-        console.log("Applying schema...");
+        console.log("Applying strict schema...");
         await pool.query(schemaSql);
-        console.log("Schema applied successfully!");
+        console.log("Strict schema applied successfully!");
     } catch (error) {
         console.error("Error applying schema:", error);
     } finally {
