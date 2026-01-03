@@ -265,7 +265,7 @@ export default function ProfilePage({
         return (
           <Card>
             <CardContent className='py-12 text-center'>
-              <p className='text-gray-500'>
+              <p className='text-white/50'>
                 Salary information is not available.
               </p>
             </CardContent>
@@ -282,7 +282,7 @@ export default function ProfilePage({
   };
 
   return (
-    <div className='min-h-screen bg-gray-50'>
+    <div className='min-h-screen'>
       <NavigationBar
         isAdmin={isAdmin}
         checkInStatus={checkInStatus}

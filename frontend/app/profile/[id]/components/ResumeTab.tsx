@@ -34,13 +34,13 @@ export function ResumeTab({ resumeUrl, resumeFileName }: ResumeTabProps) {
       <CardContent>
         {resumeUrl && resumeFileName ? (
           <div className='space-y-4'>
-            <div className='flex items-center gap-4 p-4 border border-gray-200 rounded-lg'>
-              <div className='p-3 bg-blue-50 rounded-lg'>
-                <FileText className='size-6 text-blue-600' />
+            <div className='flex items-center gap-4 p-4 border border-white/10 rounded-lg bg-white/[0.02]'>
+              <div className='p-3 bg-blue-500/10 rounded-lg'>
+                <FileText className='size-6 text-blue-400' />
               </div>
               <div className='flex-1'>
-                <p className='font-medium text-gray-900'>{resumeFileName}</p>
-                <p className='text-sm text-gray-500'>Resume document</p>
+                <p className='font-medium text-white'>{resumeFileName}</p>
+                <p className='text-sm text-white/50'>Resume document</p>
               </div>
               <div className='flex gap-2'>
                 <Button variant='outline' size='sm' onClick={handleDownload}>
@@ -56,10 +56,10 @@ export function ResumeTab({ resumeUrl, resumeFileName }: ResumeTabProps) {
           </div>
         ) : (
           <div className='flex flex-col items-center justify-center py-12 text-center'>
-            <div className='p-4 bg-gray-50 rounded-full mb-4'>
-              <FileText className='size-12 text-gray-400' />
+            <div className='p-4 bg-white/5 rounded-full mb-4'>
+              <FileText className='size-12 text-white/40' />
             </div>
-            <p className='text-sm text-gray-500 mb-4'>
+            <p className='text-sm text-white/50 mb-4'>
               No resume uploaded yet
             </p>
             <Button onClick={handleUpload} className='gap-2'>

@@ -27,7 +27,7 @@ export function SecurityTab() {
       <CardContent>
         <div className='space-y-4 max-w-md'>
           <div>
-            <label className='text-sm font-medium text-gray-700 mb-1 block'>
+            <label className='text-sm font-medium text-white/90 mb-1 block'>
               Current Password
             </label>
             <div className='relative'>
@@ -38,7 +38,7 @@ export function SecurityTab() {
               <button
                 type='button'
                 onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700'
+                className='absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white/70'
               >
                 {showCurrentPassword ? (
                   <EyeOff className='size-4' />
@@ -50,7 +50,7 @@ export function SecurityTab() {
           </div>
 
           <div>
-            <label className='text-sm font-medium text-gray-700 mb-1 block'>
+            <label className='text-sm font-medium text-white/90 mb-1 block'>
               New Password
             </label>
             <div className='relative'>
@@ -61,7 +61,7 @@ export function SecurityTab() {
               <button
                 type='button'
                 onClick={() => setShowNewPassword(!showNewPassword)}
-                className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700'
+                className='absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white/70'
               >
                 {showNewPassword ? (
                   <EyeOff className='size-4' />
@@ -73,7 +73,7 @@ export function SecurityTab() {
           </div>
 
           <div>
-            <label className='text-sm font-medium text-gray-700 mb-1 block'>
+            <label className='text-sm font-medium text-white/90 mb-1 block'>
               Confirm New Password
             </label>
             <div className='relative'>
@@ -84,7 +84,7 @@ export function SecurityTab() {
               <button
                 type='button'
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700'
+                className='absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white/70'
               >
                 {showConfirmPassword ? (
                   <EyeOff className='size-4' />

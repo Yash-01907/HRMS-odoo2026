@@ -44,7 +44,7 @@ export function PrivateInfoTab({
         <CardContent>
           <div className='space-y-4'>
             <div>
-              <label className='text-sm font-medium text-gray-700 mb-1 block'>
+              <label className='text-sm font-medium text-white/90 mb-1 block'>
                 Date of Birth
               </label>
               <Input
@@ -55,7 +55,7 @@ export function PrivateInfoTab({
               />
             </div>
             <div>
-              <label className='text-sm font-medium text-gray-700 mb-1 block'>
+              <label className='text-sm font-medium text-white/90 mb-1 block'>
                 Residing Address
               </label>
               <Input
@@ -65,7 +65,7 @@ export function PrivateInfoTab({
               />
             </div>
             <div>
-              <label className='text-sm font-medium text-gray-700 mb-1 block'>
+              <label className='text-sm font-medium text-white/90 mb-1 block'>
                 Nationality
               </label>
               <Input
@@ -75,7 +75,7 @@ export function PrivateInfoTab({
               />
             </div>
             <div>
-              <label className='text-sm font-medium text-gray-700 mb-1 block'>
+              <label className='text-sm font-medium text-white/90 mb-1 block'>
                 Personal Email
               </label>
               <Input
@@ -86,7 +86,7 @@ export function PrivateInfoTab({
               />
             </div>
             <div>
-              <label className='text-sm font-medium text-gray-700 mb-1 block'>
+              <label className='text-sm font-medium text-white/90 mb-1 block'>
                 Gender
               </label>
               <Input
@@ -96,7 +96,7 @@ export function PrivateInfoTab({
               />
             </div>
             <div>
-              <label className='text-sm font-medium text-gray-700 mb-1 block'>
+              <label className='text-sm font-medium text-white/90 mb-1 block'>
                 Marital Status
               </label>
               <Input
@@ -106,7 +106,7 @@ export function PrivateInfoTab({
               />
             </div>
             <div>
-              <label className='text-sm font-medium text-gray-700 mb-1 block'>
+              <label className='text-sm font-medium text-white/90 mb-1 block'>
                 Date of Joining
               </label>
               <Input
@@ -128,7 +128,7 @@ export function PrivateInfoTab({
         <CardContent>
           <div className='space-y-4'>
             <div>
-              <label className='text-sm font-medium text-gray-700 mb-1 block'>
+              <label className='text-sm font-medium text-white/90 mb-1 block'>
                 Account Number
               </label>
               <Input
@@ -138,7 +138,7 @@ export function PrivateInfoTab({
               />
             </div>
             <div>
-              <label className='text-sm font-medium text-gray-700 mb-1 block'>
+              <label className='text-sm font-medium text-white/90 mb-1 block'>
                 Bank Name
               </label>
               <Input
@@ -148,7 +148,7 @@ export function PrivateInfoTab({
               />
             </div>
             <div>
-              <label className='text-sm font-medium text-gray-700 mb-1 block'>
+              <label className='text-sm font-medium text-white/90 mb-1 block'>
                 IFSC Code
               </label>
               <Input
@@ -158,19 +158,19 @@ export function PrivateInfoTab({
               />
             </div>
             <div>
-              <label className='text-sm font-medium text-gray-700 mb-1 block'>
+              <label className='text-sm font-medium text-white/90 mb-1 block'>
                 PAN NO
               </label>
               <Input value={panNo || ''} readOnly placeholder='Not specified' />
             </div>
             <div>
-              <label className='text-sm font-medium text-gray-700 mb-1 block'>
+              <label className='text-sm font-medium text-white/90 mb-1 block'>
                 UAN NO
               </label>
               <Input value={uanNo || ''} readOnly placeholder='Not specified' />
             </div>
             <div>
-              <label className='text-sm font-medium text-gray-700 mb-1 block'>
+              <label className='text-sm font-medium text-white/90 mb-1 block'>
                 Emp Code
               </label>
               <Input

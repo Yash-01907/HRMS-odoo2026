@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { User, LogOut, Bell, CheckCircle2 } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 type ActiveTab = 'employees' | 'attendance' | 'timeoff';
 
@@ -39,22 +40,54 @@ export function NavigationBar({
   };
 
   return (
-    <nav className='bg-white border-b border-gray-200 px-6 py-4'>
+    <nav className='bg-white/5 backdrop-blur-sm border-b border-white/10 px-6 py-4'>
       <div className='flex items-center justify-between'>
         <div className='flex items-center gap-8'>
-          <div className='text-xl font-bold text-gray-900'>Company Logo</div>
+          <div className='flex items-center gap-2.5'>
+            <div className='w-8 h-8 rounded-lg bg-linear-to-br from-blue-500 to-violet-500 flex items-center justify-center'>
+              <svg
+                className='w-4 h-4 text-white'
+                fill='none'
+                viewBox='0 0 24 24'
+                stroke='currentColor'
+                strokeWidth={2.5}
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
+                />
+              </svg>
+            </div>
+            <span className='text-xl font-semibold text-white'>Dayflow</span>
+          </div>
 
           <Tabs
             value={activeTab}
             onValueChange={handleTabChange}
             className='w-auto'
           >
-            <TabsList>
+            <TabsList className='bg-white/5 border border-white/10'>
               {isAdmin && (
-                <TabsTrigger value='employees'>Employees</TabsTrigger>
+                <TabsTrigger
+                  value='employees'
+                  className='data-[state=active]:bg-white/10 data-[state=active]:text-white text-white/70'
+                >
+                  Employees
+                </TabsTrigger>
               )}
-              <TabsTrigger value='attendance'>Attendance</TabsTrigger>
-              <TabsTrigger value='timeoff'>Time Off</TabsTrigger>
+              <TabsTrigger
+                value='attendance'
+                className='data-[state=active]:bg-white/10 data-[state=active]:text-white text-white/70'
+              >
+                Attendance
+              </TabsTrigger>
+              <TabsTrigger
+                value='timeoff'
+                className='data-[state=active]:bg-white/10 data-[state=active]:text-white text-white/70'
+              >
+                Time Off
+              </TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -63,11 +96,11 @@ export function NavigationBar({
           <Button
             onClick={checkInStatus === 'out' ? onCheckIn : onCheckOut}
             variant={checkInStatus === 'in' ? 'outline' : 'default'}
-            className='relative pl-8'
+            className='relative pl-8 bg-gradient-to-r from-blue-500 to-violet-500 hover:from-blue-600 hover:to-violet-600 border-0'
           >
             <div
               className={`absolute left-2 size-2 rounded-full border-2 border-white ${
-                checkInStatus === 'in' ? 'bg-green-500' : 'bg-red-500'
+                checkInStatus === 'in' ? 'bg-emerald-400' : 'bg-rose-400'
               }`}
             />
             <CheckCircle2 className='mr-2 size-4' />
@@ -75,31 +108,38 @@ export function NavigationBar({
           </Button>
 
           {!isAdmin && (
-            <Button variant='ghost' size='icon' className='relative'>
+            <Button
+              variant='ghost'
+              size='icon'
+              className='relative hover:bg-white/10 text-white/70 hover:text-white'
+            >
               <Bell className='size-5' />
-              <span className='absolute top-1 right-1 size-2 rounded-full bg-red-500' />
+              <span className='absolute top-1 right-1 size-2 rounded-full bg-rose-500' />
             </Button>
           )}
 
           {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className='rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'>
-                <Avatar className='size-10 cursor-pointer'>
+              <button className='rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-blue-500/50'>
+                <Avatar className='size-10 cursor-pointer border border-white/20'>
                   <AvatarImage src='' alt='User' />
-                  <AvatarFallback>
+                  <AvatarFallback className='bg-gradient-to-br from-blue-500 to-violet-500 text-white'>
                     <User className='size-5' />
                   </AvatarFallback>
                 </Avatar>
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align='end' className='w-48'>
-              <DropdownMenuItem>
+            <DropdownMenuContent
+              align='end'
+              className='w-48 bg-white/10 backdrop-blur-md border border-white/20'
+            >
+              <DropdownMenuItem className='text-white focus:bg-white/10 focus:text-white'>
                 <User className='mr-2 size-4' />
                 My Profile
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuSeparator className='bg-white/10' />
+              <DropdownMenuItem className='text-white focus:bg-white/10 focus:text-white'>
                 <LogOut className='mr-2 size-4' />
                 Log Out
               </DropdownMenuItem>

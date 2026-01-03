@@ -168,19 +168,19 @@ export function TimeOffView({ isAdmin = false }: TimeOffViewProps) {
     switch (status) {
       case 'approved':
         return (
-          <Badge className='bg-green-100 text-green-800 border-green-200'>
+          <Badge className='bg-emerald-500/20 text-emerald-400 border-emerald-500/30'>
             Approved
           </Badge>
         );
       case 'rejected':
         return (
-          <Badge className='bg-red-100 text-red-800 border-red-200'>
+          <Badge className='bg-rose-500/20 text-rose-400 border-rose-500/30'>
             Rejected
           </Badge>
         );
       default:
         return (
-          <Badge className='bg-yellow-100 text-yellow-800 border-yellow-200'>
+          <Badge className='bg-amber-500/20 text-amber-400 border-amber-500/30'>
             Pending
           </Badge>
         );
@@ -217,17 +217,17 @@ export function TimeOffView({ isAdmin = false }: TimeOffViewProps) {
                   </DialogHeader>
                   <div className='space-y-4 py-4'>
                     <div>
-                      <label className='text-sm font-medium text-gray-700 block mb-1'>
+                      <label className='text-sm font-medium text-white/90 block mb-1'>
                         Employee
                       </label>
                       <Input
                         value={formData.employee}
                         readOnly
-                        className='bg-gray-50'
+                        className='bg-white/5'
                       />
                     </div>
                     <div>
-                      <label className='text-sm font-medium text-gray-700 block mb-1'>
+                      <label className='text-sm font-medium text-white/90 block mb-1'>
                         Time off Type
                       </label>
                       <select
@@ -238,7 +238,7 @@ export function TimeOffView({ isAdmin = false }: TimeOffViewProps) {
                             timeOffType: e.target.value,
                           }))
                         }
-                        className='w-full h-9 rounded-md border border-gray-300 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                        className='w-full h-9 rounded-md border border-white/10 bg-white/5 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50'
                       >
                         {timeOffTypes.map((type) => (
                           <option key={type} value={type}>
@@ -248,7 +248,7 @@ export function TimeOffView({ isAdmin = false }: TimeOffViewProps) {
                       </select>
                     </div>
                     <div>
-                      <label className='text-sm font-medium text-gray-700 block mb-1'>
+                      <label className='text-sm font-medium text-white/90 block mb-1'>
                         Validity Period
                       </label>
                       <div className='grid grid-cols-2 gap-2'>
@@ -270,7 +270,7 @@ export function TimeOffView({ isAdmin = false }: TimeOffViewProps) {
                       </div>
                     </div>
                     <div>
-                      <label className='text-sm font-medium text-gray-700 block mb-1'>
+                      <label className='text-sm font-medium text-white/90 block mb-1'>
                         Allocation
                       </label>
                       <Input
@@ -280,13 +280,13 @@ export function TimeOffView({ isAdmin = false }: TimeOffViewProps) {
                             : '0.00 Days'
                         }
                         readOnly
-                        className='bg-gray-50'
+                        className='bg-white/5'
                       />
                     </div>
                     <div>
-                      <label className='text-sm font-medium text-gray-700 block mb-1'>
+                      <label className='text-sm font-medium text-white/90 block mb-1'>
                         Attachment:
-                        <span className='text-gray-500 text-xs ml-1'>
+                        <span className='text-white/50 text-xs ml-1'>
                           (For sick leave certificate)
                         </span>
                       </label>
@@ -302,7 +302,7 @@ export function TimeOffView({ isAdmin = false }: TimeOffViewProps) {
                           }
                           className='pr-10'
                         />
-                        <Upload className='absolute right-3 top-1/2 transform -translate-y-1/2 size-4 text-gray-400 pointer-events-none' />
+                        <Upload className='absolute right-3 top-1/2 transform -translate-y-1/2 size-4 text-white/40 pointer-events-none' />
                       </div>
                     </div>
                   </div>
@@ -316,7 +316,7 @@ export function TimeOffView({ isAdmin = false }: TimeOffViewProps) {
               </Dialog>
             )}
             <div className='relative flex-1 max-w-md'>
-              <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-gray-400' />
+              <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-white/40' />
               <Input
                 type='search'
                 placeholder='Searchbar'
@@ -332,10 +332,10 @@ export function TimeOffView({ isAdmin = false }: TimeOffViewProps) {
             <Card>
               <CardContent className='pt-6'>
                 <div>
-                  <h3 className='text-sm font-medium text-gray-700 mb-2'>
+                  <h3 className='text-sm font-medium text-white/70 mb-2'>
                     Paid time Off
                   </h3>
-                  <p className='text-2xl font-semibold text-gray-900'>
+                  <p className='text-2xl font-semibold text-white'>
                     24 Days Available
                   </p>
                 </div>
@@ -345,10 +345,10 @@ export function TimeOffView({ isAdmin = false }: TimeOffViewProps) {
             <Card>
               <CardContent className='pt-6'>
                 <div>
-                  <h3 className='text-sm font-medium text-gray-700 mb-2'>
+                  <h3 className='text-sm font-medium text-white/70 mb-2'>
                     Sick time off
                   </h3>
-                  <p className='text-2xl font-semibold text-gray-900'>
+                  <p className='text-2xl font-semibold text-white'>
                     07 Days Available
                   </p>
                 </div>
@@ -362,30 +362,30 @@ export function TimeOffView({ isAdmin = false }: TimeOffViewProps) {
               <div className='overflow-x-auto'>
                 <table className='w-full'>
                   <thead>
-                    <tr className='border-b border-gray-200 bg-gray-50'>
-                      <th className='px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider'>
+                    <tr className='border-b border-white/10 bg-white/5'>
+                      <th className='px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider'>
                         Name
                       </th>
-                      <th className='px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider'>
+                      <th className='px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider'>
                         Start Date
                       </th>
-                      <th className='px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider'>
+                      <th className='px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider'>
                         End Date
                       </th>
-                      <th className='px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider'>
+                      <th className='px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider'>
                         Time off Type
                       </th>
-                      <th className='px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider'>
+                      <th className='px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider'>
                         Status
                       </th>
                     </tr>
                   </thead>
-                  <tbody className='bg-white divide-y divide-gray-200'>
+                  <tbody className='divide-y divide-white/10'>
                     {displayRequests.length === 0 ? (
                       <tr>
                         <td
                           colSpan={5}
-                          className='px-6 py-12 text-center text-gray-500'
+                          className='px-6 py-12 text-center text-white/50'
                         >
                           {isAdmin
                             ? 'No pending time-off requests found.'
@@ -394,19 +394,19 @@ export function TimeOffView({ isAdmin = false }: TimeOffViewProps) {
                       </tr>
                     ) : (
                       displayRequests.map((request) => (
-                        <tr key={request.id} className='hover:bg-gray-50'>
+                        <tr key={request.id} className='hover:bg-white/5'>
                           <td className='px-6 py-4 whitespace-nowrap'>
-                            <div className='text-sm font-medium text-gray-900'>
+                            <div className='text-sm font-medium text-white'>
                               {request.name}
                             </div>
                           </td>
                           <td className='px-6 py-4 whitespace-nowrap'>
-                            <div className='text-sm text-gray-900'>
+                            <div className='text-sm text-white/90'>
                               {request.startDate}
                             </div>
                           </td>
                           <td className='px-6 py-4 whitespace-nowrap'>
-                            <div className='text-sm text-gray-900'>
+                            <div className='text-sm text-white/90'>
                               {request.endDate}
                             </div>
                           </td>
@@ -421,7 +421,7 @@ export function TimeOffView({ isAdmin = false }: TimeOffViewProps) {
                                 <Button
                                   size='sm'
                                   variant='outline'
-                                  className='h-7 px-3 text-xs text-red-600 border-red-600 hover:bg-red-50'
+                                  className='h-7 px-3 text-xs text-rose-400 border-rose-500/50 hover:bg-rose-500/20 hover:border-rose-500/70'
                                   onClick={() => handleReject(request.id)}
                                 >
                                   <X className='mr-1 size-3' />
@@ -430,7 +430,7 @@ export function TimeOffView({ isAdmin = false }: TimeOffViewProps) {
                                 <Button
                                   size='sm'
                                   variant='default'
-                                  className='h-7 px-3 text-xs bg-green-600 hover:bg-green-700 text-white'
+                                  className='h-7 px-3 text-xs bg-emerald-500/80 hover:bg-emerald-500 text-white'
                                   onClick={() => handleApprove(request.id)}
                                 >
                                   <Check className='mr-1 size-3' />
@@ -454,10 +454,10 @@ export function TimeOffView({ isAdmin = false }: TimeOffViewProps) {
           {!isAdmin && (
             <Card>
               <CardContent className='pt-6'>
-                <h3 className='text-sm font-medium text-gray-700 mb-3'>
+                <h3 className='text-sm font-medium text-white/90 mb-3'>
                   TimeOff Types:
                 </h3>
-                <ul className='space-y-1 text-sm text-gray-600'>
+                <ul className='space-y-1 text-sm text-white/70'>
                   <li>- Paid Time off</li>
                   <li>- Sick Leave</li>
                   <li>- Unpaid Leaves</li>
@@ -470,7 +470,7 @@ export function TimeOffView({ isAdmin = false }: TimeOffViewProps) {
         <TabsContent value='allocation' className='mt-0'>
           <Card>
             <CardContent className='py-12 text-center'>
-              <p className='text-gray-500'>Allocation view coming soon...</p>
+              <p className='text-white/50'>Allocation view coming soon...</p>
             </CardContent>
           </Card>
         </TabsContent>

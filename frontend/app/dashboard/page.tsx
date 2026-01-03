@@ -5,13 +5,14 @@ import { NavigationBar } from './components/NavigationBar';
 import { AdminView } from './components/AdminView';
 import { EmployeeView } from './components/EmployeeView';
 import { TimeOffView } from './components/TimeOffView';
+import { redirect } from 'next/navigation';
 
 type UserRole = 'admin' | 'employee';
 type ActiveTab = 'employees' | 'attendance' | 'timeoff';
 
 export default function DashboardPage() {
   // TODO: Get role from backend/context/auth
-  const [userRole] = useState<UserRole>('employee');
+  const [userRole] = useState<UserRole>('admin');
   const [checkInStatus, setCheckInStatus] = useState<'in' | 'out'>('out');
 
   const isAdmin = useMemo(() => userRole === 'admin', [userRole]);
@@ -44,14 +45,7 @@ export default function DashboardPage() {
       case 'timeoff':
         return <TimeOffView isAdmin={isAdmin} />;
       case 'attendance':
-        if (!isAdmin) {
-          return <EmployeeView />;
-        }
-        return (
-          <div className='text-center py-12'>
-            <p className='text-gray-500'>Attendance view coming soon...</p>
-          </div>
-        );
+        redirect('/attendance');
       case 'employees':
       default:
         if (!isAdmin) {
@@ -62,7 +56,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className='min-h-screen bg-[#030712]'>
+    <div className='min-h-screen'>
       <NavigationBar
         isAdmin={isAdmin}
         checkInStatus={checkInStatus}

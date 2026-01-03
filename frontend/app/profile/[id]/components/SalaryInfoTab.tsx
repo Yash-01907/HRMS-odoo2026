@@ -241,7 +241,7 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
           </CardHeader>
           <CardContent className='space-y-4'>
             <div>
-              <label className='text-sm font-medium text-gray-700 mb-1 block'>
+              <label className='text-sm font-medium text-white/90 mb-1 block'>
                 Month Wage
               </label>
               <div className='flex items-center gap-2'>
@@ -251,11 +251,11 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
                   onChange={(e) => setMonthWage(Number(e.target.value))}
                   className='flex-1'
                 />
-                <span className='text-sm text-gray-500'>/ Month</span>
+                <span className='text-sm text-white/50'>/ Month</span>
               </div>
             </div>
             <div>
-              <label className='text-sm font-medium text-gray-700 mb-1 block'>
+              <label className='text-sm font-medium text-white/90 mb-1 block'>
                 Yearly wage
               </label>
               <div className='flex items-center gap-2'>
@@ -263,9 +263,9 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
                   type='number'
                   value={yearlyWage}
                   readOnly
-                  className='flex-1 bg-gray-50'
+                  className='flex-1 bg-white/5'
                 />
-                <span className='text-sm text-gray-500'>/ Yearly</span>
+                <span className='text-sm text-white/50'>/ Yearly</span>
               </div>
             </div>
           </CardContent>
@@ -277,7 +277,7 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
           </CardHeader>
           <CardContent className='space-y-4'>
             <div>
-              <label className='text-sm font-medium text-gray-700 mb-1 block'>
+              <label className='text-sm font-medium text-white/90 mb-1 block'>
                 No of working days in a week
               </label>
               <Input
@@ -288,7 +288,7 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
               />
             </div>
             <div>
-              <label className='text-sm font-medium text-gray-700 mb-1 block'>
+              <label className='text-sm font-medium text-white/90 mb-1 block'>
                 Break Time
               </label>
               <div className='flex items-center gap-2'>
@@ -299,7 +299,7 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
                   placeholder='Not specified'
                   className='flex-1'
                 />
-                <span className='text-sm text-gray-500'>/hrs</span>
+                <span className='text-sm text-white/50'>/hrs</span>
               </div>
             </div>
           </CardContent>
@@ -332,33 +332,33 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
                 >
                   <div className='flex items-start justify-between mb-2'>
                     <div className='flex-1'>
-                      <h3 className='font-medium text-gray-900 text-base'>
+                      <h3 className='font-medium text-white text-base'>
                         {component.name}
                       </h3>
                     </div>
                     <div className='text-right ml-4'>
-                      <p className='font-semibold text-gray-900 text-base'>
+                      <p className='font-semibold text-white text-base'>
                         ₹
                         {displayValue.toLocaleString('en-IN', {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         })}
                       </p>
-                      <p className='text-xs text-gray-500 mt-0.5'>
+                      <p className='text-xs text-white/50 mt-0.5'>
                         {percentage.toFixed(2)} %
                       </p>
                     </div>
                   </div>
-                  <p className='text-xs text-gray-500 mb-1'>₹ / month</p>
-                  <p className='text-xs text-gray-600'>
+                  <p className='text-xs text-white/50 mb-1'>₹ / month</p>
+                  <p className='text-xs text-white/70'>
                     {component.description}
                   </p>
 
                   {/* Edit controls (hidden by default, show on hover or make toggleable) */}
-                  <div className='mt-2 pt-2 border-t border-gray-100'>
+                  <div className='mt-2 pt-2 border-t border-white/10'>
                     <div className='grid grid-cols-2 gap-2 text-xs'>
                       <div>
-                        <label className='text-gray-600'>Type</label>
+                        <label className='text-white/70'>Type</label>
                         <select
                           value={component.computationType}
                           onChange={(e) =>
@@ -367,7 +367,7 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
                                 .value as ComputationType,
                             })
                           }
-                          className='w-full h-7 rounded border border-gray-300 px-2 text-xs mt-1'
+                          className='w-full h-7 rounded border border-white/10 px-2 text-xs mt-1'
                           disabled={isFixedAllowance}
                         >
                           <option value='percentage'>Percentage</option>
@@ -375,7 +375,7 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
                         </select>
                       </div>
                       <div>
-                        <label className='text-gray-600'>
+                        <label className='text-white/70'>
                           {component.computationType === 'percentage'
                             ? '%'
                             : 'Amount'}
@@ -434,7 +434,7 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
             </CardHeader>
             <CardContent className='space-y-4'>
               <div>
-                <label className='text-sm font-medium text-gray-700 mb-1 block'>
+                <label className='text-sm font-medium text-white/90 mb-1 block'>
                   PF Rate (%)
                 </label>
                 <Input
@@ -449,48 +449,48 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
               <div className='space-y-4'>
                 <div className='border-b pb-4'>
                   <div className='flex items-start justify-between mb-2'>
-                    <h3 className='font-medium text-gray-900 capitalize'>
+                    <h3 className='font-medium text-white capitalize'>
                       Employee
                     </h3>
                     <div className='text-right'>
-                      <p className='font-semibold text-gray-900'>
+                      <p className='font-semibold text-white'>
                         ₹
                         {pfEmployeeAmount.toLocaleString('en-IN', {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         })}
                       </p>
-                      <p className='text-xs text-gray-500 mt-0.5'>
+                      <p className='text-xs text-white/50 mt-0.5'>
                         {pfRate.toFixed(2)} %
                       </p>
                     </div>
                   </div>
-                  <p className='text-xs text-gray-500 mb-1'>₹ / month</p>
-                  <p className='text-xs text-gray-600'>
+                  <p className='text-xs text-white/50 mb-1'>₹ / month</p>
+                  <p className='text-xs text-white/70'>
                     PF is calculated based on the basic salary
                   </p>
                 </div>
 
                 <div>
                   <div className='flex items-start justify-between mb-2'>
-                    <h3 className='font-medium text-gray-900 capitalize'>
+                    <h3 className='font-medium text-white capitalize'>
                       Employer
                     </h3>
                     <div className='text-right'>
-                      <p className='font-semibold text-gray-900'>
+                      <p className='font-semibold text-white'>
                         ₹
                         {pfEmployerAmount.toLocaleString('en-IN', {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         })}
                       </p>
-                      <p className='text-xs text-gray-500 mt-0.5'>
+                      <p className='text-xs text-white/50 mt-0.5'>
                         {pfRate.toFixed(2)} %
                       </p>
                     </div>
                   </div>
-                  <p className='text-xs text-gray-500 mb-1'>₹ / month</p>
-                  <p className='text-xs text-gray-600'>
+                  <p className='text-xs text-white/50 mb-1'>₹ / month</p>
+                  <p className='text-xs text-white/70'>
                     PF is calculated based on the basic salary
                   </p>
                 </div>
@@ -505,7 +505,7 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
             </CardHeader>
             <CardContent>
               <div className='mb-4'>
-                <label className='text-sm font-medium text-gray-700 mb-1 block'>
+                <label className='text-sm font-medium text-white/90 mb-1 block'>
                   Professional Tax (₹/month)
                 </label>
                 <Input
@@ -518,10 +518,10 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
 
               <div className='border-t pt-4'>
                 <div className='flex items-start justify-between mb-2'>
-                  <h3 className='font-medium text-gray-900'>
+                  <h3 className='font-medium text-white'>
                     Professional Tax
                   </h3>
-                  <p className='font-semibold text-gray-900'>
+                  <p className='font-semibold text-white'>
                     ₹
                     {professionalTax.toLocaleString('en-IN', {
                       minimumFractionDigits: 2,
@@ -529,8 +529,8 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
                     })}
                   </p>
                 </div>
-                <p className='text-xs text-gray-500 mb-1'>₹ / month</p>
-                <p className='text-xs text-gray-600'>
+                <p className='text-xs text-white/50 mb-1'>₹ / month</p>
+                <p className='text-xs text-white/70'>
                   Professional Tax deducted from the Gross salary
                 </p>
               </div>
