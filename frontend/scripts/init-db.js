@@ -29,7 +29,7 @@ const pool = new Pool({
 async function runMigration() {
   const client = await pool.connect();
   try {
-    const schemaPath = path.join(__dirname, "../app/api/_db/schema.sql");
+    const schemaPath = path.join(__dirname, "../db/schema.sql");
     const schemaSql = fs.readFileSync(schemaPath, "utf8");
 
     console.log("Running migration...");

@@ -45,7 +45,7 @@ async function resetAdmin() {
         const email = "admin@dayflow.com";
         const password = "admin123";
         const hashedPassword = await bcrypt.hash(password, 10);
-        const employeeId = "ODADMIN001";
+        const employeeId = "ODADMI0001";
 
         console.log(`Resetting admin user: ${email}`);
 
