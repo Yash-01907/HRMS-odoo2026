@@ -1,12 +1,21 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 type ComputationType = 'percentage' | 'fixed';
+
+const NUMBER_FORMAT_OPTIONS: Intl.NumberFormatOptions = {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+};
+
+const BASIC_SALARY_NAME = 'Basic Salary';
+const FIXED_ALLOWANCE_NAME = 'Fixed Allowance';
+const HRA_NAME = 'House Rent Allowance';
 
 interface SalaryComponent {
   id: string;
@@ -94,24 +103,36 @@ const defaultComponents: Omit<SalaryComponent, 'id' | 'calculatedValue'>[] = [
 ];
 
 export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
-  const [monthWage, setMonthWage] = useState(initialData?.monthWage || 50000);
+  const [monthWage, setMonthWage] = useState(initialData?.monthWage ?? 50000);
   const [workingDaysPerWeek, setWorkingDaysPerWeek] = useState(
-    initialData?.workingDaysPerWeek || 5
+    initialData?.workingDaysPerWeek ?? 5
   );
-  const [breakTime, setBreakTime] = useState(initialData?.breakTime || 1);
+  const [breakTime, setBreakTime] = useState(initialData?.breakTime ?? 1);
   const [pfRate, setPfRate] = useState(12);
   const [professionalTax, setProfessionalTax] = useState(200);
+
   const [components, setComponents] = useState<SalaryComponent[]>(() => {
     if (initialData?.salaryComponents) {
-      return initialData.salaryComponents.map((comp, idx) => ({
-        id: `comp-${idx}`,
-        name: comp.name,
-        computationType: comp.percentage > 0 ? 'percentage' : 'fixed',
-        percentage: comp.percentage > 0 ? comp.percentage : undefined,
-        fixedAmount: comp.percentage > 0 ? undefined : comp.value,
-        baseComponent: comp.name.includes('HRA') ? 'Basic' : undefined,
-        description: comp.description,
-      }));
+      return initialData.salaryComponents.map((comp, idx) => {
+        const isStandardAllowance = comp.name === 'Standard Allowance';
+        return {
+          id: `comp-${idx}`,
+          name: comp.name,
+          computationType: comp.percentage > 0 ? 'percentage' : 'fixed',
+          percentage: comp.percentage > 0 ? comp.percentage : undefined,
+          fixedAmount:
+            comp.percentage > 0
+              ? undefined
+              : isStandardAllowance
+              ? 4167
+              : comp.value,
+          baseComponent:
+            comp.name === HRA_NAME || comp.name.includes('HRA')
+              ? 'Basic'
+              : undefined,
+          description: comp.description,
+        };
+      });
     }
     return defaultComponents.map((comp, idx) => ({
       ...comp,
@@ -122,41 +143,47 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
 
   const yearlyWage = useMemo(() => monthWage * 12, [monthWage]);
 
-  // Calculate component values
-  const calculatedComponents = useMemo(() => {
-    const basic = components.find((c) => c.name === 'Basic Salary');
+  // Calculate component values and extract basicAmount
+  const { calculatedComponents, basicAmount } = useMemo(() => {
+    const basic = components.find((c) => c.name === BASIC_SALARY_NAME);
     const basicAmount = basic
       ? basic.computationType === 'percentage'
-        ? (monthWage * (basic.percentage || 0)) / 100
-        : basic.fixedAmount || 0
+        ? (monthWage * (basic.percentage ?? 0)) / 100
+        : basic.fixedAmount ?? 0
       : 0;
 
     const otherComponents = components
-      .filter((c) => c.name !== 'Fixed Allowance')
+      .filter((c) => c.name !== FIXED_ALLOWANCE_NAME)
       .map((comp) => {
         let value = 0;
         if (comp.computationType === 'percentage') {
-          if (comp.baseComponent === 'Basic') {
-            // HRA is % of Basic
-            value = (basicAmount * (comp.percentage || 0)) / 100;
-          } else {
-            // Percentage of wage
-            value = (monthWage * (comp.percentage || 0)) / 100;
-          }
+          // HRA and any component with baseComponent='Basic' should use basicAmount
+          const isBasedOnBasic =
+            comp.name === HRA_NAME || comp.baseComponent === 'Basic';
+          value = isBasedOnBasic
+            ? (basicAmount * (comp.percentage ?? 0)) / 100
+            : (monthWage * (comp.percentage ?? 0)) / 100;
         } else {
-          value = comp.fixedAmount || 0;
+          // Standard Allowance is always fixed at 4167
+          if (comp.name === 'Standard Allowance') {
+            value = 4167;
+          } else {
+            value = comp.fixedAmount ?? 0;
+          }
         }
         return { ...comp, calculatedValue: value };
       });
 
     // Calculate Fixed Allowance (wage - total of all other components)
     const totalOtherComponents = otherComponents.reduce(
-      (sum, c) => sum + (c.calculatedValue || 0),
+      (sum, c) => sum + (c.calculatedValue ?? 0),
       0
     );
     const fixedAllowanceAmount = Math.max(0, monthWage - totalOtherComponents);
 
-    const fixedAllowance = components.find((c) => c.name === 'Fixed Allowance');
+    const fixedAllowance = components.find(
+      (c) => c.name === FIXED_ALLOWANCE_NAME
+    );
     const fixedAllowanceComponent = fixedAllowance
       ? {
           ...fixedAllowance,
@@ -165,28 +192,32 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
         }
       : null;
 
-    return fixedAllowanceComponent
-      ? [...otherComponents, fixedAllowanceComponent]
+    // Sort components: Basic Salary first, then others, Fixed Allowance last
+    const basicComponent = otherComponents.find(
+      (c) => c.name === BASIC_SALARY_NAME
+    );
+    const sortedComponents = basicComponent
+      ? [
+          basicComponent,
+          ...otherComponents.filter((c) => c.name !== BASIC_SALARY_NAME),
+        ]
       : otherComponents;
+
+    return {
+      calculatedComponents: fixedAllowanceComponent
+        ? [...sortedComponents, fixedAllowanceComponent]
+        : sortedComponents,
+      basicAmount,
+    };
   }, [components, monthWage]);
 
-  // Calculate PF contributions
-  const basicAmount = useMemo(() => {
-    const basic = calculatedComponents.find((c) => c.name === 'Basic Salary');
-    return basic?.calculatedValue || 0;
-  }, [calculatedComponents]);
-
-  const pfEmployeeAmount = useMemo(
-    () => (basicAmount * pfRate) / 100,
-    [basicAmount, pfRate]
-  );
-  const pfEmployerAmount = useMemo(
+  // Calculate PF contributions (same formula for both)
+  const pfAmount = useMemo(
     () => (basicAmount * pfRate) / 100,
     [basicAmount, pfRate]
   );
 
-  const handleSave = () => {
-    // Handle save logic
+  const handleSave = useCallback(() => {
     console.log('Saving salary info', {
       monthWage,
       yearlyWage,
@@ -196,40 +227,41 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
       pfRate,
       professionalTax,
     });
-  };
+  }, [
+    monthWage,
+    yearlyWage,
+    workingDaysPerWeek,
+    breakTime,
+    calculatedComponents,
+    pfRate,
+    professionalTax,
+  ]);
 
-  const updateComponent = (id: string, updates: Partial<SalaryComponent>) => {
-    setComponents((prev) =>
-      prev.map((comp) => (comp.id === id ? { ...comp, ...updates } : comp))
-    );
-  };
-
-  const addComponent = () => {
+  const addComponent = useCallback(() => {
     setComponents((prev) => [
       ...prev,
       {
         id: `comp-${Date.now()}`,
         name: '',
-        computationType: 'percentage',
+        computationType: 'percentage' as const,
         percentage: 0,
         description: '',
         calculatedValue: 0,
       },
     ]);
-  };
-
-  const removeComponent = (id: string) => {
-    const component = components.find((c) => c.id === id);
-    if (component?.name === 'Fixed Allowance') {
-      return; // Don't allow removing Fixed Allowance
-    }
-    setComponents((prev) => prev.filter((comp) => comp.id !== id));
-  };
+  }, []);
 
   // Calculate percentage of wage for display
-  const getPercentageOfWage = (value: number) => {
-    return monthWage > 0 ? (value / monthWage) * 100 : 0;
-  };
+  const getPercentageOfWage = useCallback(
+    (value: number) => (monthWage > 0 ? (value / monthWage) * 100 : 0),
+    [monthWage]
+  );
+
+  // Format currency helper
+  const formatCurrency = useCallback(
+    (value: number) => value.toLocaleString('en-IN', NUMBER_FORMAT_OPTIONS),
+    []
+  );
 
   return (
     <div className='space-y-6'>
@@ -319,106 +351,34 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
               </Button>
             </div>
           </CardHeader>
-          <CardContent className='space-y-6'>
+          <CardContent className='space-y-4'>
             {calculatedComponents.map((component) => {
-              const isFixedAllowance = component.name === 'Fixed Allowance';
               const displayValue = component.calculatedValue || 0;
               const percentage = getPercentageOfWage(displayValue);
 
               return (
                 <div
                   key={component.id}
-                  className='border-b last:border-0 pb-4 last:pb-0'
+                  className='border-b border-white/10 pb-4 last:border-0 last:pb-0'
                 >
                   <div className='flex items-start justify-between mb-2'>
                     <div className='flex-1'>
-                      <h3 className='font-medium text-white text-base'>
+                      <h3 className='font-medium text-white text-base mb-1'>
                         {component.name}
                       </h3>
                     </div>
                     <div className='text-right ml-4'>
                       <p className='font-semibold text-white text-base'>
-                        ₹
-                        {displayValue.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}
+                        {formatCurrency(displayValue)} ₹ / month
                       </p>
                       <p className='text-xs text-white/50 mt-0.5'>
                         {percentage.toFixed(2)} %
                       </p>
                     </div>
                   </div>
-                  <p className='text-xs text-white/50 mb-1'>₹ / month</p>
                   <p className='text-xs text-white/70'>
                     {component.description}
                   </p>
-
-                  {/* Edit controls (hidden by default, show on hover or make toggleable) */}
-                  <div className='mt-2 pt-2 border-t border-white/10'>
-                    <div className='grid grid-cols-2 gap-2 text-xs'>
-                      <div>
-                        <label className='text-white/70'>Type</label>
-                        <select
-                          value={component.computationType}
-                          onChange={(e) =>
-                            updateComponent(component.id, {
-                              computationType: e.target
-                                .value as ComputationType,
-                            })
-                          }
-                          className='w-full h-7 rounded border border-white/10 px-2 text-xs mt-1'
-                          disabled={isFixedAllowance}
-                        >
-                          <option value='percentage'>Percentage</option>
-                          <option value='fixed'>Fixed</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className='text-white/70'>
-                          {component.computationType === 'percentage'
-                            ? '%'
-                            : 'Amount'}
-                        </label>
-                        {component.computationType === 'percentage' ? (
-                          <Input
-                            type='number'
-                            value={component.percentage || ''}
-                            onChange={(e) =>
-                              updateComponent(component.id, {
-                                percentage: Number(e.target.value),
-                              })
-                            }
-                            className='h-7 text-xs mt-1'
-                            disabled={isFixedAllowance}
-                          />
-                        ) : (
-                          <Input
-                            type='number'
-                            value={component.fixedAmount || ''}
-                            onChange={(e) =>
-                              updateComponent(component.id, {
-                                fixedAmount: Number(e.target.value),
-                              })
-                            }
-                            className='h-7 text-xs mt-1'
-                            disabled={isFixedAllowance}
-                          />
-                        )}
-                      </div>
-                    </div>
-                    {!isFixedAllowance && (
-                      <Button
-                        variant='ghost'
-                        size='sm'
-                        onClick={() => removeComponent(component.id)}
-                        className='mt-2 h-7 text-xs text-red-500 hover:text-red-700'
-                      >
-                        <Trash2 className='mr-1 size-3' />
-                        Remove
-                      </Button>
-                    )}
-                  </div>
                 </div>
               );
             })}
@@ -447,53 +407,31 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
               </div>
 
               <div className='space-y-4'>
-                <div className='border-b pb-4'>
-                  <div className='flex items-start justify-between mb-2'>
-                    <h3 className='font-medium text-white capitalize'>
-                      Employee
-                    </h3>
-                    <div className='text-right'>
-                      <p className='font-semibold text-white'>
-                        ₹
-                        {pfEmployeeAmount.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}
-                      </p>
-                      <p className='text-xs text-white/50 mt-0.5'>
-                        {pfRate.toFixed(2)} %
-                      </p>
+                {(['Employee', 'Employer'] as const).map((type) => (
+                  <div
+                    key={type}
+                    className={
+                      type === 'Employee' ? 'border-b border-white/10 pb-4' : ''
+                    }
+                  >
+                    <div className='flex items-start justify-between mb-2'>
+                      <h3 className='font-medium text-white capitalize'>
+                        {type}
+                      </h3>
+                      <div className='text-right'>
+                        <p className='font-semibold text-white'>
+                          {formatCurrency(pfAmount)} ₹ / month
+                        </p>
+                        <p className='text-xs text-white/50 mt-0.5'>
+                          {pfRate.toFixed(2)} %
+                        </p>
+                      </div>
                     </div>
+                    <p className='text-xs text-white/70'>
+                      PF is calculated based on the basic salary
+                    </p>
                   </div>
-                  <p className='text-xs text-white/50 mb-1'>₹ / month</p>
-                  <p className='text-xs text-white/70'>
-                    PF is calculated based on the basic salary
-                  </p>
-                </div>
-
-                <div>
-                  <div className='flex items-start justify-between mb-2'>
-                    <h3 className='font-medium text-white capitalize'>
-                      Employer
-                    </h3>
-                    <div className='text-right'>
-                      <p className='font-semibold text-white'>
-                        ₹
-                        {pfEmployerAmount.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}
-                      </p>
-                      <p className='text-xs text-white/50 mt-0.5'>
-                        {pfRate.toFixed(2)} %
-                      </p>
-                    </div>
-                  </div>
-                  <p className='text-xs text-white/50 mb-1'>₹ / month</p>
-                  <p className='text-xs text-white/70'>
-                    PF is calculated based on the basic salary
-                  </p>
-                </div>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -516,20 +454,13 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
                 />
               </div>
 
-              <div className='border-t pt-4'>
+              <div className='border-t border-white/10 pt-4'>
                 <div className='flex items-start justify-between mb-2'>
-                  <h3 className='font-medium text-white'>
-                    Professional Tax
-                  </h3>
+                  <h3 className='font-medium text-white'>Professional Tax</h3>
                   <p className='font-semibold text-white'>
-                    ₹
-                    {professionalTax.toLocaleString('en-IN', {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
+                    {formatCurrency(professionalTax)} ₹ / month
                   </p>
                 </div>
-                <p className='text-xs text-white/50 mb-1'>₹ / month</p>
                 <p className='text-xs text-white/70'>
                   Professional Tax deducted from the Gross salary
                 </p>
@@ -541,7 +472,12 @@ export function SalaryInfoTab({ initialData }: SalaryInfoTabProps) {
 
       {/* Save Button */}
       <div className='flex justify-end'>
-        <Button onClick={handleSave}>Save Changes</Button>
+        <Button
+          onClick={handleSave}
+          className='bg-linear-to-r from-blue-500 to-violet-500 hover:from-blue-600 hover:to-violet-600 border-0 text-white'
+        >
+          Save Changes
+        </Button>
       </div>
     </div>
   );
