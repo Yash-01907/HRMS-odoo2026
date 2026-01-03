@@ -9,6 +9,7 @@ export interface SessionPayload {
     userId: number;
     role: "ADMIN" | "HR" | "EMPLOYEE";
     employeeId: string;
+    companyId: number;
     [key: string]: any;
 }
 

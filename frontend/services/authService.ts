@@ -2,14 +2,14 @@ import { db } from "../db/connection";
 import { HashUtils } from "../lib/hash";
 
 export class AuthService {
-    static async login(employeeId: string, email: string, password: string) {
-        // Strict 3-field check
+    static async login(identifier: string, password: string) {
+        // Flexible check: Email OR EmployeeID
         const res = await db.query(
             `SELECT u.*, r.name as role_name 
        FROM users u 
        JOIN roles r ON u.role_id = r.id 
-       WHERE u.employee_id = $1 AND u.email = $2`,
-            [employeeId, email]
+       WHERE u.email = $1 OR u.employee_id = $1`,
+            [identifier]
         );
 
         if (res.rows.length === 0) {
@@ -32,7 +32,7 @@ export class AuthService {
             employeeId: user.employee_id,
             email: user.email,
             role: user.role_name,
-            isFirstLogin: user.is_first_login,
+            companyId: user.company_id,
         };
     }
 }

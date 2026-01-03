@@ -17,7 +17,7 @@ export function AnimatedBackground() {
 
     // Generate particles only on client to avoid hydration mismatch
     useEffect(() => {
-        const generated = Array.from({ length: 12 }, (_, i) => ({
+        const generated: Particle[] = Array.from({ length: 12 }, (_, i) => ({
             id: i,
             x: Math.random() * 100,
             y: Math.random() * 100,
@@ -34,7 +34,7 @@ export function AnimatedBackground() {
             <div
                 className="absolute inset-0"
                 style={{
-                    background: `
+                    backgroundImage: `
             radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.15), transparent),
             radial-gradient(ellipse 60% 40% at 100% 100%, rgba(139, 92, 246, 0.1), transparent)
           `
@@ -61,8 +61,8 @@ export function AnimatedBackground() {
                     style={{
                         left: `${particle.x}%`,
                         top: `${particle.y}%`,
-                        width: particle.size,
-                        height: particle.size,
+                        width: `${particle.size}px`,
+                        height: `${particle.size}px`,
                     }}
                     animate={{
                         y: [0, -15, 0],
