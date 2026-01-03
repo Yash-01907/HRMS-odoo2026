@@ -1,4 +1,4 @@
-import { PayrollController } from "../../../_controllers/payrollController";
+import { PayrollController } from "../../../../../controllers/payrollController";
 
 export async function GET(req: Request, context: { params: Promise<{ userId: string }> }) {
     return PayrollController.getStructure(req, context);

@@ -1,4 +1,4 @@
-import { LeaveController } from "../_controllers/leaveController";
+import { LeaveController } from "../../../controllers/leaveController";
 
 export async function POST(req: Request) {
     return LeaveController.apply(req);

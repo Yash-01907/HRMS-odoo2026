@@ -1,4 +1,4 @@
-import { AttendanceController } from "../_controllers/attendanceController";
+import { AttendanceController } from "../../../controllers/attendanceController";
 
 export async function GET(req: Request) {
     return AttendanceController.getAttendance(req);
