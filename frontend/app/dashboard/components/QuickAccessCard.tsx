@@ -1,10 +1,10 @@
 'use client';
 
-import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { LucideIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-interface QuickAccessCardData {
+interface QuickAccessCardType {
   id: string;
   title: string;
   description: string;
@@ -16,38 +16,35 @@ interface QuickAccessCardData {
 }
 
 interface QuickAccessCardProps {
-  card: QuickAccessCardData;
-  onLogout: () => void;
+  card: QuickAccessCardType;
+  onLogout?: () => void;
 }
 
 export function QuickAccessCard({ card, onLogout }: QuickAccessCardProps) {
   const Icon = card.icon;
-  const isLogout = card.action === 'logout';
 
-  const cardContent = (
-    <Card
-      className={`cursor-pointer hover:shadow-md transition-shadow py-0 ${
-        isLogout ? 'hover:border-red-300' : ''
-      }`}
+  const handleClick = (e: React.MouseEvent) => {
+    if (card.action === 'logout' && onLogout) {
+      e.preventDefault();
+      onLogout();
+    }
+  };
+
+  return (
+    <Link
+      href={card.href}
+      onClick={handleClick}
+      className="group block p-5 rounded-xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/20 transition-all"
     >
-      <CardContent className='p-6'>
-        <div className={`inline-flex p-3 rounded-lg mb-4 ${card.bgColor}`}>
-          <Icon className={`size-6 ${card.color}`} />
-        </div>
-        <CardTitle className='text-lg mb-2'>{card.title}</CardTitle>
-        <p className='text-sm text-gray-600'>{card.description}</p>
-      </CardContent>
-    </Card>
+      <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center mb-4", card.bgColor)}>
+        <Icon className={cn("h-5 w-5", card.color)} />
+      </div>
+      <h3 className="text-white font-medium mb-1 group-hover:text-white transition-colors">
+        {card.title}
+      </h3>
+      <p className="text-white/50 text-sm">
+        {card.description}
+      </p>
+    </Link>
   );
-
-  if (isLogout) {
-    return (
-      <button onClick={onLogout} className='text-left'>
-        {cardContent}
-      </button>
-    );
-  }
-
-  return <Link href={card.href}>{cardContent}</Link>;
 }
-

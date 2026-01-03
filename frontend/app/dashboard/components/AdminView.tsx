@@ -1,10 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Search, Plus, User, Settings, Plane } from 'lucide-react';
+import { Search, Plus, Settings } from 'lucide-react';
 import { EmployeeCard } from './EmployeeCard';
 
 const employees = [
@@ -25,23 +22,23 @@ export function AdminView() {
   };
 
   return (
-    <div className='w-full'>
-      <div className='flex items-center gap-4 mb-6'>
-        <Button>
-          <Plus className='mr-2 size-4' />
+    <div className="w-full">
+      <div className="flex items-center gap-4 mb-6">
+        <Button className="bg-white text-black hover:bg-white/90">
+          <Plus className="mr-2 h-4 w-4" />
           NEW
         </Button>
-        <div className='relative flex-1 max-w-md'>
-          <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-gray-400' />
-          <Input
-            type='search'
-            placeholder='Search employees...'
-            className='pl-10'
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/40" />
+          <input
+            type="search"
+            placeholder="Search employees..."
+            className="w-full h-10 pl-10 pr-4 rounded-lg text-sm text-white placeholder-white/40 bg-white/5 border border-white/10 focus:outline-none focus:border-white/30 transition-colors"
           />
         </div>
       </div>
 
-      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6'>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
         {employees.map((employee) => (
           <EmployeeCard
             key={employee.id}
@@ -51,16 +48,15 @@ export function AdminView() {
         ))}
       </div>
 
-      <div className='mt-6'>
+      <div className="mt-6">
         <a
-          href='#'
-          className='inline-flex items-center text-sm text-gray-600 hover:text-gray-900'
+          href="#"
+          className="inline-flex items-center text-sm text-white/50 hover:text-white transition-colors"
         >
-          <Settings className='mr-2 size-4' />
+          <Settings className="mr-2 h-4 w-4" />
           Settings
         </a>
       </div>
     </div>
   );
 }
-
