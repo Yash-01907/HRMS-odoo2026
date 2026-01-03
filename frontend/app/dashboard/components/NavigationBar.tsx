@@ -43,15 +43,13 @@ export function NavigationBar({
         <div className='flex items-center gap-8'>
           <div className='text-xl font-bold text-gray-900'>Company Logo</div>
 
-          {isAdmin && (
-            <Tabs value={activeTab} onValueChange={handleTabChange} className='w-auto'>
-              <TabsList>
-                <TabsTrigger value='employees'>Employees</TabsTrigger>
-                <TabsTrigger value='attendance'>Attendance</TabsTrigger>
-                <TabsTrigger value='timeoff'>Time Off</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          )}
+          <Tabs value={activeTab} onValueChange={handleTabChange} className='w-auto'>
+            <TabsList>
+              {isAdmin && <TabsTrigger value='employees'>Employees</TabsTrigger>}
+              <TabsTrigger value='attendance'>Attendance</TabsTrigger>
+              <TabsTrigger value='timeoff'>Time Off</TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
 
         <div className='flex items-center gap-4'>

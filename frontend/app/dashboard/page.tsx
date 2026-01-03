@@ -11,11 +11,14 @@ type ActiveTab = 'employees' | 'attendance' | 'timeoff';
 
 export default function DashboardPage() {
   // TODO: Get role from backend/context/auth
-  const [userRole] = useState<UserRole>('admin');
+  const [userRole] = useState<UserRole>('employee');
   const [checkInStatus, setCheckInStatus] = useState<'in' | 'out'>('out');
-  const [activeTab, setActiveTab] = useState<ActiveTab>('employees');
 
   const isAdmin = useMemo(() => userRole === 'admin', [userRole]);
+
+  const [activeTab, setActiveTab] = useState<ActiveTab>(() =>
+    userRole === 'admin' ? 'employees' : 'attendance'
+  );
 
   const handleCheckIn = useCallback(() => {
     setCheckInStatus('in');
@@ -25,19 +28,25 @@ export default function DashboardPage() {
     setCheckInStatus('out');
   }, []);
 
-  const handleTabChange = useCallback((tab: ActiveTab) => {
-    setActiveTab(tab);
-  }, []);
+  const handleTabChange = useCallback(
+    (tab: ActiveTab) => {
+      // Prevent employees from accessing employees tab
+      if (!isAdmin && tab === 'employees') {
+        return;
+      }
+      setActiveTab(tab);
+    },
+    [isAdmin]
+  );
 
   const renderContent = () => {
-    if (!isAdmin) {
-      return <EmployeeView />;
-    }
-
     switch (activeTab) {
       case 'timeoff':
-        return <TimeOffView />;
+        return <TimeOffView isAdmin={isAdmin} />;
       case 'attendance':
+        if (!isAdmin) {
+          return <EmployeeView />;
+        }
         return (
           <div className='text-center py-12'>
             <p className='text-gray-500'>Attendance view coming soon...</p>
@@ -45,6 +54,9 @@ export default function DashboardPage() {
         );
       case 'employees':
       default:
+        if (!isAdmin) {
+          return <EmployeeView />;
+        }
         return <AdminView />;
     }
   };
@@ -60,9 +72,7 @@ export default function DashboardPage() {
         onTabChange={handleTabChange}
       />
 
-      <div className='container mx-auto px-6 py-6'>
-        {renderContent()}
-      </div>
+      <div className='container mx-auto px-6 py-6'>{renderContent()}</div>
     </div>
   );
 }
