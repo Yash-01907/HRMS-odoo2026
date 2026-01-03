@@ -99,9 +99,8 @@ export function NavigationBar({
             className='relative pl-8 bg-gradient-to-r from-blue-500 to-violet-500 hover:from-blue-600 hover:to-violet-600 border-0'
           >
             <div
-              className={`absolute left-2 size-2 rounded-full border-2 border-white ${
-                checkInStatus === 'in' ? 'bg-emerald-400' : 'bg-rose-400'
-              }`}
+              className={`absolute left-2 size-2 rounded-full border-2 border-white ${checkInStatus === 'in' ? 'bg-emerald-400' : 'bg-rose-400'
+                }`}
             />
             <CheckCircle2 className='mr-2 size-4' />
             {checkInStatus === 'out' ? 'Check IN →' : 'Check OUT →'}
@@ -134,12 +133,18 @@ export function NavigationBar({
               align='end'
               className='w-48 bg-white/10 backdrop-blur-md border border-white/20'
             >
-              <DropdownMenuItem className='text-white focus:bg-white/10 focus:text-white'>
+              <DropdownMenuItem
+                className='text-white focus:bg-white/10 focus:text-white cursor-pointer'
+                onClick={() => window.location.href = '/profile/1'}
+              >
                 <User className='mr-2 size-4' />
                 My Profile
               </DropdownMenuItem>
               <DropdownMenuSeparator className='bg-white/10' />
-              <DropdownMenuItem className='text-white focus:bg-white/10 focus:text-white'>
+              <DropdownMenuItem
+                className='text-white focus:bg-white/10 focus:text-white cursor-pointer text-rose-400'
+                onClick={() => window.location.href = '/'}
+              >
                 <LogOut className='mr-2 size-4' />
                 Log Out
               </DropdownMenuItem>
