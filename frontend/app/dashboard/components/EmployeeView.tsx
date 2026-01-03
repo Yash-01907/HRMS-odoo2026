@@ -1,16 +1,11 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import {
   User,
   Clock,
   Calendar,
   LogOut,
-  Bell,
-  AlertCircle,
-  CheckCircle2,
-  CalendarClock,
 } from 'lucide-react';
 import { QuickAccessCard } from './QuickAccessCard';
 import { RecentActivity } from './RecentActivity';
@@ -22,36 +17,36 @@ const quickAccessCards = [
     title: 'Profile',
     description: 'View and update your profile',
     icon: User,
-    color: 'text-blue-500',
-    bgColor: 'bg-blue-50',
-    href: '/employee/profile',
+    color: 'text-blue-400',
+    bgColor: 'bg-blue-500/10',
+    href: '/profile/1',
   },
   {
     id: 'attendance',
     title: 'Attendance',
     description: 'View attendance records',
     icon: Clock,
-    color: 'text-green-500',
-    bgColor: 'bg-green-50',
-    href: '/employee/attendance',
+    color: 'text-emerald-400',
+    bgColor: 'bg-emerald-500/10',
+    href: '/attendance',
   },
   {
     id: 'leave',
     title: 'Leave Requests',
     description: 'Request and manage leaves',
     icon: Calendar,
-    color: 'text-purple-500',
-    bgColor: 'bg-purple-50',
-    href: '/employee/leave',
+    color: 'text-violet-400',
+    bgColor: 'bg-violet-500/10',
+    href: '/time-off',
   },
   {
     id: 'logout',
     title: 'Logout',
     description: 'Sign out of your account',
     icon: LogOut,
-    color: 'text-red-500',
-    bgColor: 'bg-red-50',
-    href: '/logout',
+    color: 'text-rose-400',
+    bgColor: 'bg-rose-500/10',
+    href: '/',
     action: 'logout',
   },
 ] as const;
@@ -63,16 +58,16 @@ export function EmployeeView() {
 
   return (
     <>
-      <div className='mb-8'>
-        <h1 className='text-3xl font-bold text-gray-900 mb-2'>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-white mb-2">
           Welcome back!
         </h1>
-        <p className='text-gray-600'>
+        <p className="text-white/60">
           Here&apos;s your dashboard overview and quick actions.
         </p>
       </div>
 
-      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {quickAccessCards.map((card) => (
           <QuickAccessCard
             key={card.id}
@@ -82,11 +77,10 @@ export function EmployeeView() {
         ))}
       </div>
 
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <RecentActivity />
         <AlertsSection />
       </div>
     </>
   );
 }
-

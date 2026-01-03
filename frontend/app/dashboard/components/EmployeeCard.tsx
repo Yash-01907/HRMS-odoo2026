@@ -1,8 +1,7 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Plane } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { User } from 'lucide-react';
 
 interface Employee {
   id: number;
@@ -16,46 +15,30 @@ interface EmployeeCardProps {
   onClick: () => void;
 }
 
-const StatusIndicator = ({ status }: { status: Employee['status'] }) => {
-  switch (status) {
-    case 'present':
-      return (
-        <div className='absolute top-2 right-2 size-3 rounded-full bg-green-500 border-2 border-white' />
-      );
-    case 'leave':
-      return (
-        <div className='absolute top-2 right-2 p-1 bg-white rounded-full shadow-sm'>
-          <Plane className='size-3 text-blue-500' />
-        </div>
-      );
-    case 'absent':
-      return (
-        <div className='absolute top-2 right-2 size-3 rounded-full bg-yellow-500 border-2 border-white' />
-      );
-    default:
-      return null;
-  }
+const statusConfig = {
+  present: { label: 'Present', color: 'bg-emerald-500', textColor: 'text-emerald-400' },
+  leave: { label: 'On Leave', color: 'bg-amber-500', textColor: 'text-amber-400' },
+  absent: { label: 'Absent', color: 'bg-rose-500', textColor: 'text-rose-400' },
 };
 
 export function EmployeeCard({ employee, onClick }: EmployeeCardProps) {
+  const status = statusConfig[employee.status];
+
   return (
-    <Card
-      className='cursor-pointer hover:shadow-md transition-shadow relative'
+    <button
       onClick={onClick}
+      className="w-full p-4 rounded-xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/20 transition-all text-left flex items-center gap-4"
     >
-      <StatusIndicator status={employee.status} />
-      <CardContent className='flex flex-col items-center justify-center p-6 pt-8'>
-        <Avatar className='size-20 mb-4'>
-          <AvatarImage src={employee.avatar} alt={employee.name} />
-          <AvatarFallback>
-            <User className='size-10' />
-          </AvatarFallback>
-        </Avatar>
-        <p className='text-center font-medium text-gray-900'>
-          {employee.name}
-        </p>
-      </CardContent>
-    </Card>
+      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white font-medium text-sm">
+        {employee.name.split(' ').map(n => n[0]).join('')}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-white font-medium truncate">{employee.name}</p>
+        <div className="flex items-center gap-2 mt-1">
+          <div className={cn("w-2 h-2 rounded-full", status.color)} />
+          <span className={cn("text-sm", status.textColor)}>{status.label}</span>
+        </div>
+      </div>
+    </button>
   );
 }
-

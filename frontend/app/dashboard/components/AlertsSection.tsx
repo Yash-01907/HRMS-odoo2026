@@ -1,79 +1,61 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Bell, AlertCircle, Calendar, CheckCircle2 } from 'lucide-react';
+import { AlertCircle, CheckCircle2, CalendarClock } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const alerts = [
   {
-    type: 'warning' as const,
-    title: 'Action Required',
-    message: 'Please submit your timesheet for the previous week by Friday.',
+    id: 1,
+    type: 'warning',
+    title: 'Leave balance low',
+    description: 'You have 2 days remaining',
     icon: AlertCircle,
-    bgColor: 'bg-yellow-50',
-    borderColor: 'border-yellow-200',
-    iconColor: 'text-yellow-600',
-    titleColor: 'text-yellow-900',
-    messageColor: 'text-yellow-700',
+    iconColor: 'text-amber-400',
+    bgColor: 'bg-amber-500/10',
   },
   {
-    type: 'info' as const,
-    title: 'Upcoming Leave',
-    message: 'Your leave request for Dec 25-27 is pending approval.',
-    icon: Calendar,
-    bgColor: 'bg-blue-50',
-    borderColor: 'border-blue-200',
-    iconColor: 'text-blue-600',
-    titleColor: 'text-blue-900',
-    messageColor: 'text-blue-700',
-  },
-  {
-    type: 'success' as const,
-    title: 'All Set',
-    message: 'Your profile is up to date. No action needed.',
+    id: 2,
+    type: 'success',
+    title: 'Timesheet approved',
+    description: 'December timesheet approved',
     icon: CheckCircle2,
-    bgColor: 'bg-green-50',
-    borderColor: 'border-green-200',
-    iconColor: 'text-green-600',
-    titleColor: 'text-green-900',
-    messageColor: 'text-green-700',
+    iconColor: 'text-emerald-400',
+    bgColor: 'bg-emerald-500/10',
+  },
+  {
+    id: 3,
+    type: 'info',
+    title: 'Upcoming holiday',
+    description: 'Office closed on Jan 1st',
+    icon: CalendarClock,
+    iconColor: 'text-blue-400',
+    bgColor: 'bg-blue-500/10',
   },
 ];
 
 export function AlertsSection() {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className='flex items-center gap-2'>
-          <Bell className='size-5' />
-          Alerts & Notifications
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className='space-y-4'>
-          {alerts.map((alert, index) => {
-            const Icon = alert.icon;
-            return (
-              <div
-                key={index}
-                className={`p-4 ${alert.bgColor} border ${alert.borderColor} rounded-lg`}
-              >
-                <div className='flex items-start gap-3'>
-                  <Icon className={`size-5 ${alert.iconColor} mt-0.5`} />
-                  <div>
-                    <p className={`text-sm font-medium ${alert.titleColor}`}>
-                      {alert.title}
-                    </p>
-                    <p className={`text-sm ${alert.messageColor} mt-1`}>
-                      {alert.message}
-                    </p>
-                  </div>
-                </div>
+    <div className="p-6 rounded-xl border border-white/10 bg-white/[0.02]">
+      <h2 className="text-lg font-semibold text-white mb-4">Alerts & Reminders</h2>
+      <div className="space-y-3">
+        {alerts.map((alert) => {
+          const Icon = alert.icon;
+          return (
+            <div
+              key={alert.id}
+              className="flex items-start gap-4 p-3 rounded-lg bg-white/[0.02] border border-white/5"
+            >
+              <div className={cn("p-2 rounded-lg", alert.bgColor)}>
+                <Icon className={cn("h-4 w-4", alert.iconColor)} />
               </div>
-            );
-          })}
-        </div>
-      </CardContent>
-    </Card>
+              <div>
+                <p className="text-white font-medium">{alert.title}</p>
+                <p className="text-white/50 text-sm">{alert.description}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
-
