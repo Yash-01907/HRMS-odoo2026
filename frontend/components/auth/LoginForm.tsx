@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -51,6 +51,8 @@ export function LoginForm() {
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
 
     if (mode === "signin") {
       if (!formData.loginId) {
@@ -88,7 +90,13 @@ export function LoginForm() {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
