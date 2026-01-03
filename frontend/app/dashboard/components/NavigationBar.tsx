@@ -12,11 +12,15 @@ import {
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { User, LogOut, Bell, CheckCircle2 } from 'lucide-react';
 
+type ActiveTab = 'employees' | 'attendance' | 'timeoff';
+
 interface NavigationBarProps {
   isAdmin: boolean;
   checkInStatus: 'in' | 'out';
   onCheckIn: () => void;
   onCheckOut: () => void;
+  activeTab?: ActiveTab;
+  onTabChange?: (tab: ActiveTab) => void;
 }
 
 export function NavigationBar({
@@ -24,7 +28,15 @@ export function NavigationBar({
   checkInStatus,
   onCheckIn,
   onCheckOut,
+  activeTab = 'employees',
+  onTabChange,
 }: NavigationBarProps) {
+  const handleTabChange = (value: string) => {
+    if (onTabChange) {
+      onTabChange(value as ActiveTab);
+    }
+  };
+
   return (
     <nav className='bg-white border-b border-gray-200 px-6 py-4'>
       <div className='flex items-center justify-between'>
@@ -32,7 +44,7 @@ export function NavigationBar({
           <div className='text-xl font-bold text-gray-900'>Company Logo</div>
 
           {isAdmin && (
-            <Tabs defaultValue='employees' className='w-auto'>
+            <Tabs value={activeTab} onValueChange={handleTabChange} className='w-auto'>
               <TabsList>
                 <TabsTrigger value='employees'>Employees</TabsTrigger>
                 <TabsTrigger value='attendance'>Attendance</TabsTrigger>
